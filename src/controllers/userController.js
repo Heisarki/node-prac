@@ -99,4 +99,42 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
-module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser };
+const loginUser = async (req, res, next) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return next(new ValidationError("email and password are required fields"));
+    }
+    try {
+        const result = await query(
+            "SELECT id, name, address, email, age, password FROM users WHERE email = $1",
+            [email]
+        );
+        if (!result.length) {
+            return next(new ValidationError("Invalid email or password"));
+        }
+        const user = result[0];
+
+        if (user.password !== password) {
+            return next(new ValidationError("Invalid email or password"));
+        }
+
+        const accessToken = generateToken({ id: user.id, email: user.email });
+
+        res.json({
+            success: true,
+            message: "Login successful",
+            accessToken,
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                age: user.age,
+                address: user.address,
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser, loginUser };
