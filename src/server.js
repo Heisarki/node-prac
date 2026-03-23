@@ -6,6 +6,7 @@ const startServer = async () => {
     // Connect to database first
     await connectDB();
 
+    // Start server
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
         console.log(`API base: http://localhost:${PORT}/api/v1`);
