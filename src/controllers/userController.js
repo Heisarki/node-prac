@@ -1,5 +1,29 @@
 const { query } = require("../utils/queryHelper");
 const { ValidationError, NotFoundError } = require("../utils/errors");
+const { v4: uuidv4 } = require("uuid");
+const { generateToken } = require("../auth/authHelper");
+
+const createUser = async (req, res, next) => {
+    const { name, address, email, age, password } = req.body;
+    if (!name || !email || !password) {
+        return next(new ValidationError("name, email, and password are required fields"));
+    }
+    const id = uuidv4();
+    try {
+        const result = await query(
+            "INSERT INTO users (id, name, address, email, age, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+            [id, name, address, email, age, password]
+        );
+        res.json({
+            success: true,
+            data: result[0],
+            message: "User created successfully",
+            accessToken: generateToken({ id: result[0].id, email: result[0].email }), // Generate JWT token
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 const getUsers = async (req, res, next) => {
     try {
@@ -23,26 +47,6 @@ const getUserById = async (req, res, next) => {
             success: true,
             data: data[0],
             message: "User retrieved successfully",
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-const createUser = async (req, res, next) => {
-    const { id, name, address } = req.body;
-    if (!id || !name || !address) {
-        return next(new ValidationError("id, name, and address are required fields"));
-    }
-    try {
-        const result = await query(
-            "INSERT INTO users (id, name, address) VALUES ($1, $2, $3) RETURNING *",
-            [id, name, address]
-        );
-        res.status(201).json({
-            success: true,
-            data: result[0],
-            message: "User created successfully",
         });
     } catch (error) {
         next(error);
