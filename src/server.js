@@ -9,7 +9,6 @@ const startServer = async () => {
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
         console.log(`API base: http://localhost:${PORT}/api/v1`);
-        console.log(`Health:   http://localhost:${PORT}/health`);
         console.log(`NODE_ENV: ${process.env.NODE_ENV || "development"}`);
     });
 };
