@@ -22,6 +22,7 @@ const authenticateToken = (req, res, next) => {
         });
     }
 
+    // console.log("Decoded JWT:", verifyToken(token)); // Debugging line to check token contents  
     try {
         const decoded = verifyToken(token);
         req.user = decoded; // e.g., { id, email }

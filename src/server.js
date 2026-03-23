@@ -16,4 +16,3 @@ const startServer = async () => {
 };
 
 startServer();
-console.log("TEST", new NotFoundError())
