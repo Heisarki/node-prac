@@ -6,13 +6,14 @@ const {
     updateUser,
     deleteUser,
 } = require("../controllers/userController");
+const { authenticateToken } = require("../auth/authHelper");
 
 const router = Router();
 
-router.get("/", getUsers);
-router.get("/:id", getUserById);
-router.post("/", createUser);
-router.patch("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.get("/", authenticateToken, getUsers);
+router.get("/:id", authenticateToken, getUserById);
+router.post("/", createUser); // No auth for registration
+router.patch("/:id", authenticateToken, updateUser);
+router.delete("/:id", authenticateToken, deleteUser);
 
 module.exports = router;

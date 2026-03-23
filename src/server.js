@@ -1,6 +1,7 @@
 const app = require("./app");
 const { connectDB } = require("./config/db");
 const { PORT } = require("./config/env");
+const { NotFoundError } = require("./utils/errors");
 
 const startServer = async () => {
     // Connect to database first
@@ -15,3 +16,4 @@ const startServer = async () => {
 };
 
 startServer();
+console.log("TEST", new NotFoundError())
